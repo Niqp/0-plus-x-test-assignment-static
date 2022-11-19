@@ -23,8 +23,8 @@ let currentSorting = SORTING_TYPES.cuteness;
 
 const createImgElement = (imgObject) => {
   const image = document.createElement("img");
-  image.src = imgObject.src ? imgObject.src : "";
-  image.alt = imgObject.alt ? imgObject.alt : "";
+  image.src = imgObject.src ?? "";
+  image.alt = imgObject.alt ?? "";
   return image;
 };
 
@@ -41,8 +41,7 @@ const sortList = (list, type, order) => {
   const listContentCopy = list.slice(0);
   if (type === SORTING_TYPES.cuteness) {
     listContentCopy.sort((a, b) => b.cuteness - a.cuteness);
-  }
-  if (type === SORTING_TYPES.location) {
+  } else if (type === SORTING_TYPES.location) {
     listContentCopy.sort((a, b) => {
       const locationA = a.location.toUpperCase();
       const locationB = b.location.toUpperCase();
@@ -88,6 +87,7 @@ const handleSortingButtonClick = (ev) => {
     else currentOrder = ORDER.ascending;
     sortingOrderButton.textContent = currentOrder;
     renderList(list, images);
+    return;
   }
   if (ev.target.id === "sort-by-cuteness") {
     if (currentSorting !== SORTING_TYPES.cuteness) {
@@ -95,6 +95,7 @@ const handleSortingButtonClick = (ev) => {
       currentSorting = SORTING_TYPES.cuteness;
       renderList(list, images);
     }
+    return;
   }
   if (ev.target.id === "sort-by-location") {
     if (currentSorting !== SORTING_TYPES.location) {
@@ -102,6 +103,7 @@ const handleSortingButtonClick = (ev) => {
       currentSorting = SORTING_TYPES.location;
       renderList(list, images);
     }
+    return;
   }
 };
 
