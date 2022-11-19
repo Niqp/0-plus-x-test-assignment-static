@@ -3,12 +3,20 @@ import { images } from "./content.js";
 const ORDER = {
   ascending: "Ascending",
   descending: "Descending",
-}
+};
 
 const SORTING_TYPES = {
   cuteness: "Cuteness",
-  location: "Location"
-}
+  location: "Location",
+};
+
+const FEATURED_TITLE = "Otter Family";
+
+const featuredImage = images[2];
+const list = document.querySelector("#list");
+const sortingButtons = document.querySelector(".sorting-menu");
+const sortingOrderButton = sortingButtons.querySelector("#sorting-order");
+const featured = document.querySelector("#featured");
 
 let currentOrder = ORDER.ascending;
 let currentSorting = SORTING_TYPES.cuteness;
@@ -70,15 +78,8 @@ function renderFeatured(element, title, featuredImage) {
   element.appendChild(image);
 }
 
-const list = document.getElementById("list");
-const sortingButtons = document.querySelector(".sorting-menu");
-const sortingOrderButton = sortingButtons.querySelector("#sorting-order")
 renderList(list, images);
-
-const featuredTitle = "Otter Family";
-const featuredImage = images[2];
-const featured = document.getElementById("featured");
-renderFeatured(featured, featuredTitle, featuredImage);
+renderFeatured(featured, FEATURED_TITLE, featuredImage);
 
 const handleSortingButtonClick = (ev) => {
   if (ev.target.id === "sorting-order") {
