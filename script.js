@@ -1,44 +1,107 @@
-import { images } from './content.js';
+import { images } from "./content.js";
+
+const ORDER = {
+  ascending: "Ascending",
+  descending: "Descending",
+}
+
+const SORTING_TYPES = {
+  cuteness: "Cuteness",
+  location: "Location"
+}
+
+let currentOrder = ORDER.ascending;
+let currentSorting = SORTING_TYPES.cuteness;
 
 const createImgElement = (imgObject) => {
-  const image = document.createElement('img');
-  image.src = imgObject.src ? imgObject.src : '';
-  image.alt = imgObject.alt ? imgObject.alt : '';
+  const image = document.createElement("img");
+  image.src = imgObject.src ? imgObject.src : "";
+  image.alt = imgObject.alt ? imgObject.alt : "";
   return image;
 };
 
 const appendImageArray = (element, objectArray) => {
   for (const object of objectArray) {
-    const item = document.createElement('li');
+    const item = document.createElement("li");
     const image = createImgElement(object);
     item.appendChild(image);
     element.appendChild(item);
   }
-}
+};
 
-const sortList = (list) => {
+const sortList = (list, type, order) => {
   const listContentCopy = list.slice(0);
-  listContentCopy.sort((a, b) => b.cuteness - a.cuteness);
+  if (type === SORTING_TYPES.cuteness) {
+    listContentCopy.sort((a, b) => b.cuteness - a.cuteness);
+  }
+  if (type === SORTING_TYPES.location) {
+    listContentCopy.sort((a, b) => {
+      const locationA = a.location.toUpperCase();
+      const locationB = b.location.toUpperCase();
+      if (locationA < locationB) {
+        return -1;
+      }
+      if (locationA > locationB) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+  if (order === ORDER.descending) listContentCopy.reverse();
   return listContentCopy;
-}
+};
 
 function renderList(listElement, listContent) {
-  const sortedList = sortList(listContent);
+  const sortedList = sortList(listContent, currentSorting, currentOrder);
   appendImageArray(listElement, sortedList);
 }
 
+const clearElement = (element) => {
+  while (element.firstChild) {
+    element.removeChild(element.firstChild);
+  }
+};
+
 function renderFeatured(element, title, featuredImage) {
-  const heading = document.createElement('h2');
+  const heading = document.createElement("h2");
   const image = createImgElement(featuredImage);
   heading.textContent = title;
   element.appendChild(heading);
   element.appendChild(image);
 }
 
-const list = document.getElementById('list');
+const list = document.getElementById("list");
+const sortingButtons = document.querySelector(".sorting-menu");
+const sortingOrderButton = sortingButtons.querySelector("#sorting-order")
 renderList(list, images);
 
-const featuredTitle = 'Otter Family';
+const featuredTitle = "Otter Family";
 const featuredImage = images[2];
-const featured = document.getElementById('featured');
+const featured = document.getElementById("featured");
 renderFeatured(featured, featuredTitle, featuredImage);
+
+const handleSortingButtonClick = (ev) => {
+  if (ev.target.id === "sorting-order") {
+    clearElement(list);
+    if (currentOrder === ORDER.ascending) currentOrder = ORDER.descending;
+    else currentOrder = ORDER.ascending;
+    sortingOrderButton.textContent = currentOrder;
+    renderList(list, images);
+  }
+  if (ev.target.id === "sort-by-cuteness") {
+    if (currentSorting !== SORTING_TYPES.cuteness) {
+      clearElement(list);
+      currentSorting = SORTING_TYPES.cuteness;
+      renderList(list, images);
+    }
+  }
+  if (ev.target.id === "sort-by-location") {
+    if (currentSorting !== SORTING_TYPES.location) {
+      clearElement(list);
+      currentSorting = SORTING_TYPES.location;
+      renderList(list, images);
+    }
+  }
+};
+
+sortingButtons.addEventListener("click", handleSortingButtonClick);
